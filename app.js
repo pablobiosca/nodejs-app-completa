@@ -3,16 +3,17 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const exphbs = require("express-handlebars")
+const {engine} = require("express-handlebars")
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const linksRouter = require('./routes/links');
+const authRouter = require('./routes/authentication');
 
 const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.engine(".hbs",exphbs({
+app.engine(".hbs",engine({
   defaultLayout:"main",
   layoutsDir:path.join(app.get("views"),"layouts"),
   partialsDir:path.join(app.get("views"),"partials"),
@@ -30,13 +31,14 @@ app.use(cookieParser());
 
 //global variables
 app.use( (req,res,next) =>{
-  
+
   next()
 })
 
 //routes
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/links', linksRouter);
+app.use('/authentication', authRouter);
 
 //public
 app.use(express.static(path.join(__dirname, 'public')));
