@@ -55,7 +55,7 @@ app.use( (req,res,next) =>{
 //routes
 app.use('/', indexRouter);
 app.use('/links', linksRouter);
-app.use('/authentication', authRouter);
+app.use('/', authRouter);
 
 //public
 app.use(express.static(path.join(__dirname, 'public')));
