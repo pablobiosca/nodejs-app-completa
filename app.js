@@ -8,6 +8,7 @@ const flash = require("connect-flash")
 const session = require("express-session")
 const smysql = require("express-mysql-session")
 const {database} = require("./keys")
+const passport = require("passport")
 
 const indexRouter = require('./routes/index');
 const linksRouter = require('./routes/links');
@@ -16,6 +17,9 @@ const authRouter = require('./routes/authentication');
 const app = express();
 
 // view engine setup
+
+require("./lib/passport")
+
 app.set('views', path.join(__dirname, 'views'));
 app.engine(".hbs",engine({
   defaultLayout:"main",
@@ -42,6 +46,10 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+//uso de passport
+app.use(passport.initialize())
+app.use(passport.session())
 
 
 
