@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 const pool = require("../database")
 
+const {isloggedin} = require("../lib/auth")
+
 /* GET users listing. */
-router.get('/', async function(req, res, next) {
+router.get('/', isloggedin,async function(req, res, next) {
   const [links] = await pool.query("select * from links")
 
   console.log(links)
@@ -12,11 +14,11 @@ router.get('/', async function(req, res, next) {
 
 });
 
-router.get("/add", (req,res)=>{
+router.get("/add", isloggedin,(req,res)=>{
   res.render("lnks/add")
 })
 
-router.post("/add", async (req,res)=>{
+router.post("/add", isloggedin,async (req,res)=>{
 
   const {title,url,description} = req.body
 
@@ -29,7 +31,7 @@ router.post("/add", async (req,res)=>{
   res.redirect("/links")
 })
 
-router.get("/delete/:id", async (req,res)=>{
+router.get("/delete/:id", isloggedin,async (req,res)=>{
   const {id} = req.params
 
   await pool.query("delete from links where id_link = ?",[id])
@@ -39,7 +41,7 @@ router.get("/delete/:id", async (req,res)=>{
   res.redirect("/links")
 })
 
-router.get("/edit/:id", async (req,res)=>{
+router.get("/edit/:id", isloggedin,async (req,res)=>{
   const {id} = req.params
 
   // await pool.query("delete from links where id_link = ?",[id])
@@ -52,7 +54,7 @@ router.get("/edit/:id", async (req,res)=>{
   res.render("lnks/edit",{link:link[0]})
 })
 
-router.post( "/edit/:id" , async (req,res)=>{
+router.post( "/edit/:id" , isloggedin,async (req,res)=>{
   const {id} = req.params
   const {title,url,description} = req.body
   
