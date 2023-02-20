@@ -23,7 +23,10 @@ router.post("/signin",isnotelogged,(req,res,next)=>{
     successRedirect:"/profile",
     failureRedirect:"/signin",
     failureFlash:true
-  })(req,res,next)
+  })
+  
+  (req,res,next)
+
 })
 
 router.get("/profile", isloggedin, (req,res)=>{

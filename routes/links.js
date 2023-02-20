@@ -1,17 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const pool = require("../database")
+const pool = require("../database_cc")
 
 const {isloggedin} = require("../lib/auth")
 
 /* GET users listing. */
 router.get('/', isloggedin,async function(req, res, next) {
-  const [links] = await pool.query("select * from links")
+
+  console.log(req.user.id_user)
+  const [links] = await pool.query("select * from links where id_user = ?",[req.user.id_user])
 
   console.log(links)
 
   res.render("lnks/list",{links})
-
+  
 });
 
 router.get("/add", isloggedin,(req,res)=>{
@@ -22,13 +24,16 @@ router.post("/add", isloggedin,async (req,res)=>{
 
   const {title,url,description} = req.body
 
-  const newlink = {title,url,description}
+  const newlink = {title,url,description,id_user:req.user.id_user}
+
+  console.log(newlink)
 
   await pool.query("insert into links SET ?",[newlink])
 
   req.flash("success","Link saved successfully")
 
   res.redirect("/links")
+
 })
 
 router.get("/delete/:id", isloggedin,async (req,res)=>{

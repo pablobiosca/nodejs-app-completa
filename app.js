@@ -7,8 +7,9 @@ const {engine} = require("express-handlebars")
 const flash = require("connect-flash")
 const session = require("express-session")
 const smysql = require("express-mysql-session")
-const {database} = require("./keys")
+const {database,database_cc} = require("./keys")
 const passport = require("passport")
+// require("dotenv").config()
 
 const indexRouter = require('./routes/index');
 const linksRouter = require('./routes/links');
@@ -30,12 +31,23 @@ app.engine(".hbs",engine({
 }))
 app.set('view engine', '.hbs');
 
+//donde se almacenan las sesiones
+
+let base_utilizar;
+
+if(process.env.NODE_ENV=="production"){
+  base_utilizar = database_cc
+}else{
+  base_utilizar = database
+}
+
+
 //uso de sesiones
 app.use(session({
   secret:"patata",
   resave:false,
   saveUninitialized:false,
-  store: new smysql(database)
+  store: new smysql(base_utilizar)
 }))
 
 //uso de flash
